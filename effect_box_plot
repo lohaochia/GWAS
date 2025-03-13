@@ -1,0 +1,19 @@
+# 安裝和加載所需的套件
+if (!require(ggplot2)) install.packages("ggplot2")
+library(ggplot2)
+library(ggpubr)
+# 假設數據集
+# data 是 SNP 效應表現的數據框，其中包含三列: "Group", "Trait" 和 "Genotype"
+data <- read.table("C.txt", header = TRUE)
+
+# 繪製盒形圖
+# 繪製盒形圖
+ggplot(data, aes(x = Allele, y = Trait, fill = Allele)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(x = "Allele", y = "1_8_Leaf color", title = "Kukri_rep_c103187_152 Effect Plot") +
+  annotate("text", x = 1.5, y = max(data$Trait) + 0.2, 
+           label = paste("p =", signif(0.0000821, 3)), size = 5) +
+  scale_fill_manual(values = c("C" = "#F8766D", "T" = "#00BFC4")) +
+  #stat_compare_means(method = "t.test", label = "p.format") +
+  theme(legend.position = "right", text = element_text(size = 12))
