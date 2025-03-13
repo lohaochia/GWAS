@@ -1,0 +1,9 @@
+install.packages("qqman")
+library(CMplot)
+snp=read.table("C.txt",header=T)#SNP資料
+CMplot(snp)
+CMplot(snp,plot.type="c",r=0.5,threshold=c(0.01,0.05)/nrow(snp),cex = 0.5, 
+       threshold.col = c("red","orange"), threshold.lty = c(1,2),amplify = T, cir.chr.h = 2,
+       signal.cex = c(2,2), signal.pch = c(19,20), signal.col=c("red","green"),outward=TRUE)
+CMplot(snp,plot.type="d",bin.size=10000,col=c("darkgreen", "yellow", "red"),file="jpg",memo="SNPdensity",dpi=300,
+       file.output=TRUE, verbose=TRUE,main="The 23209 SNP density in wheat within 0.01 Mb window size ")
