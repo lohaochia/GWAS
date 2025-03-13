@@ -1,0 +1,3 @@
+#輸入tassel計算出來的PC
+pca=read.table("pca.txt",header=T)
+plot(pca$PC1,pca$PC2,pch=16,col="red",xlab="PC1(8.44%)",ylab="PC2(4.18%)",main="PCA of 132 wheat lines using 29010 SNP markers on A, B and D genome")
