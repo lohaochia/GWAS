@@ -1,0 +1,11 @@
+library(qqman)
+#輸入tassel計算的LM結果
+GWAS=read.table("C.txt",header=T)
+#繪製QQ_plot
+png(file="MPqq.png")
+qq(GWAS$MLMPC,main="238 wheat root length(MLM+PCA)")
+dev.off()
+#繪製manhattan
+png(file="MPM.png",width=800,heigh=260)
+manhattan(GWAS, chr="Chr", bp="Pos", snp="Marker", p="MLMPC" ,annotatePval = 0.001,chrlabs = c("1A","1B","1D","2A","2B","2D","3A","3B","3D","4A","4B","4D","5A","5B","5D","6A","6B","6D","7A","7B","7D"),suggestivelin=4,main="MLM+PC",ylim=c(0,8),genomewideline=5.68 )
+dev.off()
