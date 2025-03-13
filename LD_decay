@@ -1,0 +1,46 @@
+#先用tassel生成r^2與距離的關係表
+jald=read.table(".txt",header=T)
+I.LD=data.frame(jald,jald$Dist_bp)
+str(I.LD)
+##remove sites that have NaN for distance or r2
+ld_sub <- I.LD[I.LD$R.2 != "NaN",]
+ld_sub$dist <- as.numeric(ld_sub$jald.Dist_bp)
+ld_sub2 <-ld_sub[ld_sub$jald.Dist_bp != "NaN",]
+ld_sub2$rsq <-ld_sub2$R.2
+
+File <- ld_sub2[,c(1,2,7,8,15:17,19,20)]
+
+#C values range from about 0.5 to 2,start with 0.1
+Cstart <- c(C=0.1)
+#擬合r^2與距離的回歸曲線
+modelC <-nls(rsq ~( (10+C*dist)/((2+C*dist)*(11+C*dist) ) )*
+               ( 1+((3+C*dist)*(12+12*C*dist+(C*dist)^2) )/(2*N*(2+C*dist)*(11+C*dist) ) ),
+             data=File, start=Cstart ,control=nls.control(maxiter=100))
+
+rho <- summary(modelC)$parameters[1]
+
+newrsq <- ( (10+rho*File$dist) / ((2+rho*File$dist) * (11+rho*File$dist) ) )*
+  (1 +( (3+rho * File$dist) *(12+12*rho*File$dist+(rho*File$dist) ) /
+          (2*File$N*(2+rho*File$dist)*(11+rho*File$dist) ) ) )
+
+newfile <-data.frame(File$dist, newrsq)
+
+maxld <- max(newfile$newrsq,na.rm=TRUE)
+halfdecay=maxld*0.5#LD降到一伴的r^2
+halfdecaydist <- newfile$File.dist[which.min(abs(newfile$newrsq-halfdecay))]#?@?br^2??��???Z??
+decaydist0.2<- newfile$File.dist[which.min(abs(newfile$newrsq-0.2))]
+decaydist0.1<- newfile$File.dist[which.min(abs(newfile$newrsq-0.1))]
+newfile <- newfile[order(newfile$File.dist),]
+#plot
+mar.default <- c(5,4,4,2)+0.1
+par(mar=mar.default+c(0, 4, 0, 0))
+plot(x=1,y=1,xlim=c(0,5000000),ylim=c(0,0.6),pch=".",cex=2,xlab="Distance (bp)",ylab=expression(LD~(r^2)),col="whitwhite",mine= "LD decay on 6D of 238 wheats using 445 SNP markers.")
+lines(newfile$File.dist, newfile$newrsq,col="red", lwd=0.8)
+abline(h=0.2297,col="red",lty=3,lwd=0.3)
+abline(h=0.2,col="red",lty=3,lwd=0.3)
+abline(h=0.1,col="red",lty=3,lwd=0.3)
+abline(v=halfdecaydist,col="red",lty=3,lwd=0.3)
+abline(v=decaydist0.2,col="red",lty=3,lwd=0.3)
+abline(v=decaydist0.1,col="red",lty=3,lwd=0.3)
+mtext(round(halfdecaydist,2),side=1 ,line=0.05, at=halfdecaydist,cex=0.75,col="red")
+legend( x = "topright",legend = c("r^2 half decay distance=357.74kb","r^2 decay to 0.2 distance=460.422kb","r^2 decay to 0.1 distance=1305.28kb"), col = "black")
