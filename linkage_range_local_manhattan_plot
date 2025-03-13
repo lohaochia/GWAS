@@ -1,0 +1,9 @@
+a=read.table("c.txt",header=T)
+a$POS=a$POS/1000000
+plot(x=a$POS,y=a$PVALUE,col=a$R,pch=18,xlab="position (mb, IWGSC v.2)",ylab="-log P-value",main="Local manhattan plot on 4D",xlim=c(1
+,52))
+abline(v= 639.744138 ,col="red",lty=3,lwd=0.3)
+abline(v=665.353,col="red",lty=3,lwd=0.3)
+mtext(round(639.74,2),side=1 ,line=0.05, at=639.744138,cex=0.75,col="red")
+mtext(round(665.353,2),side=1 ,line=0.05, at=665.353,cex=0.75,col="red")
+legend(x="topleft",legend=c("1","0.9-0.99","0.8-0.89","0.7-0.79","0.6-0.69","0.5-0.59","0.4-0.49","0.3-0.39","0.2-0.29","0.1-0.19","0-0.09"),fill = c("darkred","red","darkorange","orange","yellow","green3","green","darkblue","blue","lightblue","gray"),text.width=1.9,y.intersp=0.7,title = "r^2 with peak SNP")      
